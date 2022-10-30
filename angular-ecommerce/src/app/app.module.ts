@@ -1,5 +1,7 @@
+import { ProductService } from './services/product.service';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { ProductListComponent } from './components/product-list/product-list.component';
@@ -10,9 +12,10 @@ import { ProductListComponent } from './components/product-list/product-list.com
     ProductListComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [ProductService], //Inject the given service for our application
   bootstrap: [AppComponent]
 })
 export class AppModule { }
