@@ -39,11 +39,20 @@ export class ProductService {
 
   //pagination
   getProductListPaginate(thePage: number,
-                        thePageSize: number,
-                        theCategoryId: number): Observable<GetResponseProducts> {
+    thePageSize: number,
+    theCategoryId: number): Observable<GetResponseProducts> {
     //need to build url based on categoryId, page and size
     const searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${theCategoryId}`
-                      + `&page=${thePage}&size=${thePageSize}`;
+      + `&page=${thePage}&size=${thePageSize}`;
+    return this.httpClient.get<GetResponseProducts>(searchUrl);
+  }
+
+  searchProductsPaginate(thePage: number,
+    thePageSize: number,
+    theKeyWord: string): Observable<GetResponseProducts> {
+    //need to build url based on keyword, page and size
+    const searchUrl = `${this.baseUrl}/search/findByNameContaining?name=${theKeyWord}`
+      + `&page=${thePage}&size=${thePageSize}`;
     return this.httpClient.get<GetResponseProducts>(searchUrl);
   }
 
