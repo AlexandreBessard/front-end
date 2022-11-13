@@ -1,3 +1,4 @@
+import { Luv2ShopFormService } from './../../services/luv2-shop-form.service';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
@@ -13,7 +14,11 @@ export class CheckoutComponent implements OnInit {
   totalPrice: number = 0;
   totalQuantity: number = 0;
 
-  constructor(private formBuilder: FormBuilder) { }
+  creditCardYears: number[] = [];
+  creditCardMonths: number[] = [];
+
+  constructor(private formBuilder: FormBuilder,
+    private Luv2ShopFormService: Luv2ShopFormService) { }
 
   ngOnInit(): void {
     this.checkoutFormGroup = this.formBuilder.group({
@@ -41,8 +46,20 @@ export class CheckoutComponent implements OnInit {
         nameOnCard: [''],
         cardNumber: [''],
         securityCode: [''],
-        expirationMonth: ['']
+        expirationMonth: [''],
+        expirationYear: ['']
       }),
+    });
+    // populate credit card months and years
+    const startMonth: number = new Date().getMonth() + 1; //0 month based (january is 0) in total with have 11 months
+    this.Luv2ShopFormService.getCreditCardMonths(startMonth).subscribe(
+      data => {
+        this.creditCardMonths = data;
+    });
+
+    this.Luv2ShopFormService.getCreditCardYears().subscribe(
+      data => {
+        this.creditCardYears = data;
     });
   }
 
@@ -60,4 +77,19 @@ export class CheckoutComponent implements OnInit {
     console.log("Handling form submission");
   }
 
+  handleMonthAndYears() {
+    const creditCardFormGroup = this.checkoutFormGroup.get('creditCard');
+    const currentYear: number =  new Date().getFullYear();
+    const selectedYear: number = Number(creditCardFormGroup.value.expirationYear);
+    let startMonth: number;
+    if(currentYear === selectedYear) {
+      startMonth = new Date().getMonth() + 1;
+    } else {
+      startMonth = 1;
+    }
+    this.Luv2ShopFormService.getCreditCardMonths(startMonth).subscribe(
+      data => {
+        this.creditCardMonths = data;
+      });
+  }
 }
